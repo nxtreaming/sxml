@@ -101,6 +101,19 @@ static void print_prettyxml (const char* buffer, const sxmltok_t tokens[], UINT 
 				puts (">");
 				break;
 
+			case SXML_CHARACTER:
+				// skip the '\r\n'
+				if (token->endpos == token->startpos + 2) {
+					const char *ptr = buffer + token->startpos;
+
+					if (ptr[0] == '\r' && ptr[1] == '\n')
+						continue;
+				}
+				print_indent ((*indentlevel)++);
+				print_tokenvalue (buffer, token);
+				--(*indentlevel);
+				puts("");
+				break;
 
 			/* Other token types you might be interested in: */
 			/*
@@ -108,7 +121,6 @@ static void print_prettyxml (const char* buffer, const sxmltok_t tokens[], UINT 
 			case SXML_DOCTYPE:
 			case SXML_COMMENT:
 			case SXML_CDATA:
-			case SXML_CHARACTER:
 			*/
 
 			default:
